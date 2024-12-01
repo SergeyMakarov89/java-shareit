@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -35,17 +36,10 @@ public class ItemRepository {
 
     public List<ItemDto> getItemsByUserId(Long userId) {
         log.info("Запустили метод получения вещей по айди пользователя в репозитории");
-        List<Item> itemsList = items.values().stream().toList();
-        List<Item> itemsListByUser = new ArrayList<>();
-        for (Item item : itemsList) {
-            if (item.getOwner().getId().equals(userId)) {
-                itemsListByUser.add(item);
-            }
-        }
-        List<ItemDto> itemDtoList = new ArrayList<>();
-        for (Item item : itemsListByUser) {
-            itemDtoList.add(itemMapper.mapToItemDto(item));
-        }
+        List<ItemDto> itemDtoList = items.values().stream()
+                .filter(item -> item.getOwner().getId().equals(userId))
+                .map(itemMapper::mapToItemDto)
+                .toList();
         log.info("Собрали вещи по айди пользователя в список в репозитории");
         return itemDtoList;
     }
@@ -93,21 +87,18 @@ public class ItemRepository {
 
     public List<ItemDto> findItems(String text) {
         log.info("Запустили метод поиска вещей в репозитории");
-        List<Item> itemsList = new ArrayList<>();
-        List<ItemDto> itemsListDto = new ArrayList<>();
+
         if (text.isBlank()) {
             return new ArrayList<>();
         }
-        for (Item item : items.values()) {
-            if (item.getName().toLowerCase().contains(text.toLowerCase()) || item.getDescription().toLowerCase().contains(text.toLowerCase())) {
-                if (item.getAvailable().equals(true)) {
-                    itemsList.add(item);
-                }
-            }
-        }
-        for (Item item : itemsList) {
-            itemsListDto.add(itemMapper.mapToItemDto(item));
-        }
+
+        List<ItemDto> itemsListDto = items.values().stream()
+                .filter(item -> (item.getName().toLowerCase().contains(text.toLowerCase()) ||
+                        item.getDescription().toLowerCase().contains(text.toLowerCase())) &&
+                        item.getAvailable())
+                .map(itemMapper::mapToItemDto)
+                .collect(Collectors.toList());
+
         log.info("Нашли вещи по запросу в репозитории");
         return itemsListDto;
     }
