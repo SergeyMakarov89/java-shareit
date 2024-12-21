@@ -3,13 +3,15 @@ package ru.practicum.shareit.item;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.item.comment.Comment;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
-public class ItemDto {
+public class ItemDtoResponse {
     private Long id;
     @NotNull
     @NotBlank
@@ -21,6 +23,7 @@ public class ItemDto {
     private Boolean available;
     private User owner;
     private ItemRequest request;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private Booking lastBooking;
+    private Booking nextBooking;
+    private List<Comment> comments;
 }
