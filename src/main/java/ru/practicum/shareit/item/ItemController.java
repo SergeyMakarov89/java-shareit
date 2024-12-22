@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.comment.CommentDto;
+import ru.practicum.shareit.item.comment.CommentDtoResponse;
 
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
-    public ItemDto getItemById(@PathVariable("itemId") Long itemId) {
+    public ItemDtoResponse getItemById(@PathVariable("itemId") Long itemId) {
         log.info("Запустили метод получения вещи по айди в контроллере");
         return itemService.getItemById(itemId);
     }
@@ -45,7 +47,7 @@ public class ItemController {
 
     @DeleteMapping("/{itemId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteItem(Long itemId) {
+    public void deleteItem(@PathVariable("itemId") Long itemId) {
         log.info("Запустили метод удаления вещи в контроллере");
         itemService.deleteItem(itemId);
     }
@@ -55,5 +57,12 @@ public class ItemController {
     public List<ItemDto> findItems(String text) {
         log.info("Запустили метод поиска вещи в контроллере");
         return itemService.findItems(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentDtoResponse createComment(@RequestHeader("X-Sharer-User-Id") Long userId, @PathVariable("itemId") Long itemId, @Valid @RequestBody CommentDto commentDto) {
+        log.info("Запустили метод создания коммента в контроллере");
+        return itemService.createComment(itemId, userId, commentDto);
     }
 }

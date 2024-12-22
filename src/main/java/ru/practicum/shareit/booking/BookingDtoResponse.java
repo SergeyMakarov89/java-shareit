@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking;
 
-import jakarta.persistence.*;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import ru.practicum.shareit.enums.BookingStatus;
 import ru.practicum.shareit.item.Item;
@@ -8,23 +10,14 @@ import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "bookings")
 @Data
-public class Booking {
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class BookingDtoResponse {
     private Long id;
-    @Column(name = "start_date")
+    @NotNull
     private LocalDateTime start;
-    @Column(name = "end_date")
+    @NotNull
     private LocalDateTime end;
-    @ManyToOne
-    @JoinColumn(name = "item_id")
     private Item item;
-    @ManyToOne
-    @JoinColumn(name = "booker_id")
     private User booker;
     @Enumerated(EnumType.STRING)
     private BookingStatus status;
