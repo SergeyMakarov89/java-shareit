@@ -1,11 +1,9 @@
 package ru.practicum.shareit.booking;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.Item;
 
 @Slf4j
-@Component
 public class BookingMapper {
 
     public static Booking mapToBooking(BookingDto request, Item item) {

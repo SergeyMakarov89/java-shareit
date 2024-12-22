@@ -1,10 +1,8 @@
 package ru.practicum.shareit.user;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 public class UserMapper {
     public static User mapToUser(UserDto request) {
         log.info("Запустили метод корвертации пользователя из юзердто в юзера в юзермаппере");

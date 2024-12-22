@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -29,17 +31,15 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getItems() {
         log.info("Запустили метод получения всех вещей в сёрвисе");
-        List<ItemDto> itemDtoList = new ArrayList<>();
-        for (Item item : itemRepository.findAll()) {
-            itemDtoList.add(ItemMapper.mapToItemDto(item));
-        }
-        return itemDtoList;
+        return itemRepository.findAll().stream()
+                .map(ItemMapper::mapToItemDto)
+                .collect(toList());
     }
 
     @Override
     public ItemDtoResponse getItemById(Long itemId) {
         log.info("Запустили метод получения вещей по айди вещи в сёрвисе");
-        Item item = itemRepository.findById(itemId).get();
+        Item item = itemRepository.findById(itemId).orElseThrow();
         List<Comment> comments = commentRepository.findByItemId(itemId);
         return ItemMapper.mapToItemDtoResponse(item, comments);
     }
@@ -47,11 +47,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getItemsByUserId(Long userId) {
         log.info("Запустили метод получения вещей по айди пользователя в сёрвисе");
-        List<ItemDto> itemDtoList = new ArrayList<>();
-        for (Item item : itemRepository.findByOwnerId(userId)) {
-            itemDtoList.add(ItemMapper.mapToItemDto(item));
-        }
-        return itemDtoList;
+        return itemRepository.findByOwnerId(userId).stream()
+                .map(ItemMapper::mapToItemDto)
+                .collect(toList());
     }
 
     @Override
@@ -64,7 +62,7 @@ public class ItemServiceImpl implements ItemService {
         if (userRepository.findById(userId).isEmpty()) {
             throw new NotFoundException("Пользователь с таким айди не найден");
         }
-        request.setOwner(userRepository.findById(userId).get());
+        request.setOwner(userRepository.findById(userId).orElseThrow());
         return ItemMapper.mapToItemDto(itemRepository.save(ItemMapper.mapToItem(request)));
     }
 
@@ -77,15 +75,15 @@ public class ItemServiceImpl implements ItemService {
         if (userRepository.findById(userId).isEmpty()) {
             throw new NotFoundException("Владелец вещи не найден");
         }
-        request.setOwner(userRepository.findById(userId).get());
+        request.setOwner(userRepository.findById(userId).orElseThrow());
         if (request.getAvailable() == null) {
-            request.setAvailable(itemRepository.findById(itemId).get().getAvailable());
+            request.setAvailable(itemRepository.findById(itemId).orElseThrow().getAvailable());
         }
         if (request.getName() == null) {
-            request.setName(itemRepository.findById(itemId).get().getName());
+            request.setName(itemRepository.findById(itemId).orElseThrow().getName());
         }
         if (request.getDescription() == null) {
-            request.setDescription(itemRepository.findById(itemId).get().getDescription());
+            request.setDescription(itemRepository.findById(itemId).orElseThrow().getDescription());
         }
 
         Item item = itemRepository.save(ItemMapper.mapToItem(request));
@@ -116,8 +114,8 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public CommentDtoResponse createComment(Long itemId, Long userId, CommentDto commentDto) {
-        Item item = itemRepository.findById(itemId).get();
-        User user = userRepository.findById(userId).get();
+        Item item = itemRepository.findById(itemId).orElseThrow();
+        User user = userRepository.findById(userId).orElseThrow();
 
         if (bookingRepository.findByBookerIdAndItemIdAndEndIsBefore(userId, itemId, LocalDateTime.now()).isEmpty()) {
             throw new ValidationException("Этот пользователь не брал в аренду эту вещь");
