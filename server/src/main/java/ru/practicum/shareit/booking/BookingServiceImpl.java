@@ -106,32 +106,24 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDtoResponse> getBookingsByUserIdAndStatus(Long userId, SearchType searchType) {
 
-        List<BookingDtoResponse> bookingDtoResponseList = new ArrayList<>();
-
         switch (searchType) {
             case ALL -> {
-                bookingDtoResponseList = bookingListToBookingDtoResponseList(bookingRepository.findByBookerIdOrderByStartDesc(userId));
-                return bookingDtoResponseList;
+                return bookingListToBookingDtoResponseList(bookingRepository.findByBookerIdOrderByStartDesc(userId));
             }
             case PAST -> {
-                bookingDtoResponseList = bookingListToBookingDtoResponseList(bookingRepository.findByBookerIdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now()));
-                return bookingDtoResponseList;
+                return bookingListToBookingDtoResponseList(bookingRepository.findByBookerIdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now()));
             }
             case CURRENT -> {
-                bookingDtoResponseList = bookingListToBookingDtoResponseList(bookingRepository.findCurrentBookingsByUser(userId, LocalDateTime.now(), LocalDateTime.now()));
-                return bookingDtoResponseList;
+                return bookingListToBookingDtoResponseList(bookingRepository.findCurrentBookingsByUser(userId, LocalDateTime.now(), LocalDateTime.now()));
             }
             case FUTURE -> {
-                bookingDtoResponseList = bookingListToBookingDtoResponseList(bookingRepository.findByBookerIdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now()));
-                return bookingDtoResponseList;
+                return bookingListToBookingDtoResponseList(bookingRepository.findByBookerIdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now()));
             }
             case WAITING -> {
-                bookingDtoResponseList = bookingListToBookingDtoResponseList(bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING));
-                return bookingDtoResponseList;
+                return bookingListToBookingDtoResponseList(bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.WAITING));
             }
             case REJECTED -> {
-                bookingDtoResponseList = bookingListToBookingDtoResponseList(bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED));
-                return bookingDtoResponseList;
+                return bookingListToBookingDtoResponseList(bookingRepository.findByBookerIdAndStatusOrderByStartDesc(userId, BookingStatus.REJECTED));
             }
             default -> {
                 return new ArrayList<>();

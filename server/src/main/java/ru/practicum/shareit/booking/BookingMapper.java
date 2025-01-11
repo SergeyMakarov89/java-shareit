@@ -9,9 +9,6 @@ public class BookingMapper {
     public static Booking mapToBooking(BookingDto request, Item item) {
         log.info("Запустили метод корвертации бронирования из букингдто в букинг в букингмаппере");
         Booking booking = new Booking();
-        if (request.getId() != null) {
-            booking.setId(request.getId());
-        }
         if (request.getStart() != null) {
             booking.setStart(request.getStart());
         }

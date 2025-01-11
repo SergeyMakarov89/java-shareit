@@ -393,4 +393,229 @@ public class BookingServiceImplTest {
 
         assertEquals(1, bookingDtoResponseList.size());
     }
+
+    @Test
+    void testGetBookingsByUserItemsAndStatusPast() {
+        User user1 = new User();
+        user1.setName("User19");
+        user1.setEmail("user19@user.com");
+        Long userId = userRepository.save(user1).getId();
+
+        ItemDto itemDto = new ItemDto();
+        itemDto.setName("Item19");
+        itemDto.setDescription("Description19");
+        itemDto.setOwner(user1);
+        itemDto.setAvailable(true);
+
+        Long itemId = itemService.createItem(userId, itemDto).getId();
+
+        User user2 = new User();
+        user2.setName("User20");
+        user2.setEmail("user20@user.com");
+        userRepository.save(user2);
+
+        ItemRequest itemRequest = new ItemRequest();
+        itemRequest.setRequestor(user2);
+        itemRequest.setDescription("ItemRequestDescription11");
+
+        itemRequestRepository.save(itemRequest);
+
+        BookingDto bookingDto = new BookingDto();
+        bookingDto.setItemId(itemRepository.findById(itemId).orElseThrow().getId());
+        bookingDto.setBooker(userRepository.findById(userId).orElseThrow());
+        bookingDto.setStatus(BookingStatus.APPROVED);
+        bookingDto.setStart(LocalDateTime.now().minusHours(5));
+        bookingDto.setEnd(LocalDateTime.now());
+
+        bookingService.createBooking(userId, bookingDto);
+
+        CommentDto commentDto = new CommentDto();
+        commentDto.setText("CommentText11");
+
+        itemService.createComment(itemId, userId, commentDto);
+
+        List<BookingDtoResponse> bookingDtoResponseList = bookingService.getBookingsByUserItemsAndStatus(userId, SearchType.PAST);
+
+        assertEquals(1, bookingDtoResponseList.size());
+    }
+
+    @Test
+    void testGetBookingsByUserItemsAndStatusCurrent() {
+        User user1 = new User();
+        user1.setName("User21");
+        user1.setEmail("user21@user.com");
+        Long userId = userRepository.save(user1).getId();
+
+        ItemDto itemDto = new ItemDto();
+        itemDto.setName("Item19");
+        itemDto.setDescription("Description19");
+        itemDto.setOwner(user1);
+        itemDto.setAvailable(true);
+
+        Long itemId = itemService.createItem(userId, itemDto).getId();
+
+        User user2 = new User();
+        user2.setName("User22");
+        user2.setEmail("user22@user.com");
+        userRepository.save(user2);
+
+        ItemRequest itemRequest = new ItemRequest();
+        itemRequest.setRequestor(user2);
+        itemRequest.setDescription("ItemRequestDescription12");
+
+        itemRequestRepository.save(itemRequest);
+
+        BookingDto bookingDto = new BookingDto();
+        bookingDto.setItemId(itemRepository.findById(itemId).orElseThrow().getId());
+        bookingDto.setBooker(userRepository.findById(userId).orElseThrow());
+        bookingDto.setStatus(BookingStatus.APPROVED);
+        bookingDto.setStart(LocalDateTime.now().minusHours(5));
+        bookingDto.setEnd(LocalDateTime.now());
+
+        bookingService.createBooking(userId, bookingDto);
+
+        CommentDto commentDto = new CommentDto();
+        commentDto.setText("CommentText12");
+
+        itemService.createComment(itemId, userId, commentDto);
+
+        List<BookingDtoResponse> bookingDtoResponseList = bookingService.getBookingsByUserItemsAndStatus(userId, SearchType.CURRENT);
+
+        assertEquals(0, bookingDtoResponseList.size());
+    }
+
+    @Test
+    void testGetBookingsByUserItemsAndStatusFuture() {
+        User user1 = new User();
+        user1.setName("User23");
+        user1.setEmail("user23@user.com");
+        Long userId = userRepository.save(user1).getId();
+
+        ItemDto itemDto = new ItemDto();
+        itemDto.setName("Item20");
+        itemDto.setDescription("Description20");
+        itemDto.setOwner(user1);
+        itemDto.setAvailable(true);
+
+        Long itemId = itemService.createItem(userId, itemDto).getId();
+
+        User user2 = new User();
+        user2.setName("User24");
+        user2.setEmail("user24@user.com");
+        userRepository.save(user2);
+
+        ItemRequest itemRequest = new ItemRequest();
+        itemRequest.setRequestor(user2);
+        itemRequest.setDescription("ItemRequestDescription13");
+
+        itemRequestRepository.save(itemRequest);
+
+        BookingDto bookingDto = new BookingDto();
+        bookingDto.setItemId(itemRepository.findById(itemId).orElseThrow().getId());
+        bookingDto.setBooker(userRepository.findById(userId).orElseThrow());
+        bookingDto.setStatus(BookingStatus.APPROVED);
+        bookingDto.setStart(LocalDateTime.now().minusHours(5));
+        bookingDto.setEnd(LocalDateTime.now());
+
+        bookingService.createBooking(userId, bookingDto);
+
+        CommentDto commentDto = new CommentDto();
+        commentDto.setText("CommentText13");
+
+        itemService.createComment(itemId, userId, commentDto);
+
+        List<BookingDtoResponse> bookingDtoResponseList = bookingService.getBookingsByUserItemsAndStatus(userId, SearchType.WAITING);
+
+        assertEquals(0, bookingDtoResponseList.size());
+    }
+
+    @Test
+    void testGetBookingsByUserItemsAndStatusWaiting() {
+        User user1 = new User();
+        user1.setName("User25");
+        user1.setEmail("user25@user.com");
+        Long userId = userRepository.save(user1).getId();
+
+        ItemDto itemDto = new ItemDto();
+        itemDto.setName("Item21");
+        itemDto.setDescription("Description21");
+        itemDto.setOwner(user1);
+        itemDto.setAvailable(true);
+
+        Long itemId = itemService.createItem(userId, itemDto).getId();
+
+        User user2 = new User();
+        user2.setName("User26");
+        user2.setEmail("user26@user.com");
+        userRepository.save(user2);
+
+        ItemRequest itemRequest = new ItemRequest();
+        itemRequest.setRequestor(user2);
+        itemRequest.setDescription("ItemRequestDescription14");
+
+        itemRequestRepository.save(itemRequest);
+
+        BookingDto bookingDto = new BookingDto();
+        bookingDto.setItemId(itemRepository.findById(itemId).orElseThrow().getId());
+        bookingDto.setBooker(userRepository.findById(userId).orElseThrow());
+        bookingDto.setStatus(BookingStatus.APPROVED);
+        bookingDto.setStart(LocalDateTime.now().minusHours(5));
+        bookingDto.setEnd(LocalDateTime.now());
+
+        bookingService.createBooking(userId, bookingDto);
+
+        CommentDto commentDto = new CommentDto();
+        commentDto.setText("CommentText14");
+
+        itemService.createComment(itemId, userId, commentDto);
+
+        List<BookingDtoResponse> bookingDtoResponseList = bookingService.getBookingsByUserItemsAndStatus(userId, SearchType.REJECTED);
+
+        assertEquals(0, bookingDtoResponseList.size());
+    }
+
+    @Test
+    void testGetBookingsByUserItemsAndStatusRejected() {
+        User user1 = new User();
+        user1.setName("User27");
+        user1.setEmail("user27@user.com");
+        Long userId = userRepository.save(user1).getId();
+
+        ItemDto itemDto = new ItemDto();
+        itemDto.setName("Item22");
+        itemDto.setDescription("Description22");
+        itemDto.setOwner(user1);
+        itemDto.setAvailable(true);
+
+        Long itemId = itemService.createItem(userId, itemDto).getId();
+
+        User user2 = new User();
+        user2.setName("User28");
+        user2.setEmail("user28@user.com");
+        userRepository.save(user2);
+
+        ItemRequest itemRequest = new ItemRequest();
+        itemRequest.setRequestor(user2);
+        itemRequest.setDescription("ItemRequestDescription15");
+
+        itemRequestRepository.save(itemRequest);
+
+        BookingDto bookingDto = new BookingDto();
+        bookingDto.setItemId(itemRepository.findById(itemId).orElseThrow().getId());
+        bookingDto.setBooker(userRepository.findById(userId).orElseThrow());
+        bookingDto.setStatus(BookingStatus.APPROVED);
+        bookingDto.setStart(LocalDateTime.now().minusHours(5));
+        bookingDto.setEnd(LocalDateTime.now());
+
+        bookingService.createBooking(userId, bookingDto);
+
+        CommentDto commentDto = new CommentDto();
+        commentDto.setText("CommentText15");
+
+        itemService.createComment(itemId, userId, commentDto);
+
+        List<BookingDtoResponse> bookingDtoResponseList = bookingService.getBookingsByUserItemsAndStatus(userId, SearchType.FUTURE);
+
+        assertEquals(0, bookingDtoResponseList.size());
+    }
 }
